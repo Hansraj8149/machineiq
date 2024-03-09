@@ -6,6 +6,10 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 })
 
+const instructionMessage: OpenAI.Chat.CreateChatCompletionRequestMessage = {
+    role: "system",
+    content:"You are a code generator. You must answer only in markdown code snippets. Use code comments as explanation"
+}
 
 
 export async function POST(
@@ -25,13 +29,13 @@ export async function POST(
 
         const response = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
-            messages: [{"role": "user", "content": "Hello!"}],
+            messages:[instructionMessage, ...message]
           });
         //   console.log(response.choices[0].message);
         return NextResponse.json(response.choices[0].message)
 
     }catch(error:any) {
-        console.log("[CONVERSATION_ERROR]", error);
+        console.log("[CODE_ERROR]", error);
         if(error.type==='insufficient_quota') {
         return  NextResponse.json({content:"You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors."})
 
