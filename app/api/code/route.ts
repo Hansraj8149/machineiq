@@ -1,9 +1,12 @@
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { getApiKey } from '../submitapikey/route';
+
+let OPENAI_API_KEY:any= getApiKey();
 
 const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: OPENAI_API_KEY,
 })
 
 const instructionMessage: OpenAI.Chat.CreateChatCompletionRequestMessage = {
