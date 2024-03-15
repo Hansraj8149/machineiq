@@ -1,45 +1,43 @@
+import {GoogleGenerativeAI} from '@google/generative-ai'
+import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs';
-import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
-import { getApiKey } from '../submitapikey/route';
-let OPENAI_API_KEY:string = getApiKey();
 
+const API_KEY:any= process.env.API_KEY;
 
-    console.log(OPENAI_API_KEY)
-    const openai = new OpenAI({
-        apiKey:OPENAI_API_KEY
-    })
-    
-    
-    export async function POST(
-        req:Request
-) {
-    try {
+const generationConfig = {
+    temperature: 0.9,
+  };
+  
+
+const genAI = new GoogleGenerativeAI(API_KEY)
+
+const model = genAI.getGenerativeModel({model: "gemini-pro", generationConfig})
+export async function POST(req:NextRequest) {
+    try{
         const {userId}  = auth();
         const body = await req.json();
-        const {message}  = body;
+        // console.log(body);
+
+        // let prompt="You are a code generator. You must answer only in markdown code snippets. Use code comments as explanation! "
         
-        console.log(OPENAI_API_KEY)
+        const {message}  = body;
+         const prompt= message[message.length-1].content;
+        
         if(!userId) return new NextResponse("User not found!",{status: 401});
-        if(!openai.apiKey) new NextResponse("Api key not configured", {status:500})
-        if(!message) return new NextResponse("please enter the message", {status:400})
+        if(!prompt) return new NextResponse("please enter the message", {status:400})
+
+       const result:any= await model.generateContent(prompt)
+      const response  = await result.response;
+      const text= response.text();
 
 
 
-
-        const response = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
-            messages: [{"role": "user", "content": "Hello!"}],
-          });
-        //   console.log(response.choices[0].message);
-        return NextResponse.json(response.choices[0].message)
-
-    }catch(error:any) {
-        console.log("[CODE_ERROR]", error);
-        if(error.type==='insufficient_quota') {
-        return  NextResponse.json({content:"You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors."})
-
-        }
-        return new NextResponse("Internal Error", { status: 500 });
+        // console.log(response[0].candidates)
+        return NextResponse.json(text, {status: 200})
     }
+    catch(error:any) {
+        console.log("an error occured", error);
+        return NextResponse.json(error.message || "Internal sserver Error", {status: 500})
+    }
+
 }

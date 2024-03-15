@@ -19,7 +19,7 @@ const router = useRouter();
     if(!apiKey.length) {
       alert("Please Enter ApiKey")
     }else {
-    await axios.post('http://localhost:3001/api/submitapikey', {
+    await axios.post('http://localhost:3000/api/submitapikey', {
       apiKey:apiKey
     });
     router.push('/dashboard')
