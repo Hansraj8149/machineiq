@@ -19,12 +19,12 @@ import { cn } from "@/lib/utils"
 import { formSchema } from "../code/constants"
 import { Heading } from "@/components/Heading"
 import { Loader } from "@/components/Loader"
-import { MusicIcon } from "lucide-react"
+import { VideoIcon } from "lucide-react"
 // import Router from "next/router"
 
- function Music() {
+ function Video() {
   // const router = Router();
-  const [music, setMusic] = useState<string>();
+  const [video, setVideo] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,10 +36,10 @@ import { MusicIcon } from "lucide-react"
   const isLoading = form.formState.isSubmitting;
  async function onSubmit(values: z.infer<typeof formSchema>) {
   try {
-setMusic(undefined);
-   const response = await axios.post('api/music',values);
-   console.log(response);
-   setMusic(response.data);
+setVideo(undefined);
+   const response = await axios.post('api/video',values);
+   console.log(response)
+   setVideo(response.data);
   
     form.reset();
 
@@ -51,9 +51,9 @@ setMusic(undefined);
   return ( 
     <div>
       <Heading
-        title="Music"
-        description="Our most advanced Music model."
-        icon={MusicIcon}
+        title="Video"
+        description="Our most advanced Video model."
+        icon={VideoIcon}
         iconColor="text-violet-500"
         bgColor="bg-violet-500/10"
       />
@@ -83,7 +83,7 @@ setMusic(undefined);
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading} 
-                        placeholder="Edo25 major g melodies that sound triumphant and cinematic. Leading up to a crescendo that resolves in a 9th harmonic"
+                        placeholder= "A panda eating bamboo on a rock."
                         {...field}
                       />
                     </FormControl>
@@ -103,12 +103,12 @@ setMusic(undefined);
             </div>
           )}
           {/* {messages.length === 0 && !isLoading && (
-            <Empty label="No Music started." />
+            <Empty label="No Video started." />
           )} */}
-          {music && (
-          <audio controls className="w-full mt-8">
-            <source src={music} />
-          </audio>
+          {video && (
+          <video controls className="w-full aspect-video mt-8 rounded-lg border bg-black">
+            <source src={video} />
+          </video>
         )}
         </div>
       </div>
@@ -116,4 +116,4 @@ setMusic(undefined);
    );
 
 }
-export default Music;
+export default Video;
