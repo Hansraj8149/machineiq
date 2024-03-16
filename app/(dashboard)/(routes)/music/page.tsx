@@ -7,11 +7,8 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
@@ -20,13 +17,14 @@ import { UserAvatar } from "@/components/user-avatar"
 import { BotAvatar } from "@/components/bot-avatar"
 import { cn } from "@/lib/utils"
 import { formSchema } from "../code/constants"
-import { MessageSquare } from "lucide-react"
 import { Heading } from "@/components/Heading"
 import { Loader } from "@/components/Loader"
+import { MusicIcon } from "lucide-react"
+// import Router from "next/router"
 
-
- function Conversation() {
-  const [messages, setMessages]:any  = useState([]);
+ function Music() {
+  // const router = Router();
+  const [music, setMusic] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,25 +36,10 @@ import { Loader } from "@/components/Loader"
   const isLoading = form.formState.isSubmitting;
  async function onSubmit(values: z.infer<typeof formSchema>) {
   try {
-
-    const userMessage= {
-      role:"user",
-      content: values.prompt,
-    };
-    const newMessage:any = [...messages, userMessage];
-    const response = await axios.post('/api/conversation', {
-      message:newMessage
-    });
-    const botMessage = {
-      role:'bot',
-      content:response.data
-    }
+setMusic(undefined);
+   const response = await axios.post('api/music',values);
+   setMusic(response.data.audio);
   
-    // newMessage.result = response.data;
-    // console.log(newMessage)
-    // console.log(botMessage);
-    setMessages((current:any)=> [...current, userMessage, botMessage]);
-    // console.log(messages);
     form.reset();
 
    }catch(error) {
@@ -67,9 +50,9 @@ import { Loader } from "@/components/Loader"
   return ( 
     <div>
       <Heading
-        title="Conversation"
-        description="Our most advanced conversation model."
-        icon={MessageSquare}
+        title="Music"
+        description="Our most advanced Music model."
+        icon={MusicIcon}
         iconColor="text-violet-500"
         bgColor="bg-violet-500/10"
       />
@@ -99,7 +82,7 @@ import { Loader } from "@/components/Loader"
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading} 
-                        placeholder="How do I calculate the radius of a circle?" 
+                        placeholder="Edo25 major g melodies that sound triumphant and cinematic. Leading up to a crescendo that resolves in a 9th harmonic"
                         {...field}
                       />
                     </FormControl>
@@ -119,28 +102,17 @@ import { Loader } from "@/components/Loader"
             </div>
           )}
           {/* {messages.length === 0 && !isLoading && (
-            <Empty label="No conversation started." />
+            <Empty label="No Music started." />
           )} */}
-          <div className="flex flex-col-reverse gap-y-4">
-            {messages.map((message:any) => (
-              <div 
-                key={message.content} 
-                className={cn(
-                  "p-8 w-full flex items-start gap-x-8 rounded-lg",
-                  message.role === "user" ? "bg-white border border-black/10" : "bg-muted",
-                )}
-              >
-                {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                <p className="text-sm">
-                  {message.content}
-                </p>
-              </div>
-            ))}
-          </div>
+          {music && (
+          <audio controls className="w-full mt-8">
+            <source src={music} />
+          </audio>
+        )}
         </div>
       </div>
     </div>
    );
 
 }
-export default Conversation;
+export default Music;

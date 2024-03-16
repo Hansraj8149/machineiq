@@ -31,7 +31,7 @@ function CodePage() {
     },
   })
  
-  // 2. Define a submit handler.
+
   const isLoading = form.formState.isSubmitting;
  async function onSubmit(values: z.infer<typeof formSchema>) {
   try {
@@ -50,8 +50,8 @@ function CodePage() {
     }
   
     // newMessage.result = response.data;
-    console.log(newMessage)
-    console.log(botMessage);
+    // console.log(newMessage)
+    // console.log(botMessage);
     setMessages((current:any)=> [...current, userMessage, botMessage]);
     console.log(messages);
     form.reset();
@@ -116,7 +116,8 @@ function CodePage() {
         <div className="flex flex-col-reverse gap-y-4">
           {messages.map((message:any) => (
           <div key={message.content} className={cn("p-8 w-full flex items-start gap-x-8 rounded-lg ", message.role==='user'?"bg-white border border-black/10":"bg-muted")}>
-            {message.role==="user"?<UserAvatar/>:<BotAvatar/>}
+            {message.role=='user'?<UserAvatar/>:<BotAvatar/>}
+            {/* {console.log(message.role)} */}
            <ReactMarkdown components={{
                   pre: ({ node, ...props }) => (
                     <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">

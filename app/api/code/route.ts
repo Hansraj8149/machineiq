@@ -13,7 +13,7 @@ export async function POST(req:NextRequest) {
     try{
         const {userId}  = auth();
         const body = await req.json();
-        console.log(body);
+        // console.log(body);
 
         let prompt="You are a code generator. You must answer only in markdown code snippets. Use code comments as explanation! "
         
@@ -29,7 +29,7 @@ export async function POST(req:NextRequest) {
 
 
 
-        console.log(response)
+        // console.log(response)
         return NextResponse.json(text, {status: 200})
     }
     catch(error:any) {
