@@ -23,9 +23,10 @@ import { formSchema } from "../code/constants"
 import { MessageSquare } from "lucide-react"
 import { Heading } from "@/components/Heading"
 import { Loader } from "@/components/Loader"
-
+import { useRouter } from "next/navigation"
 
  function Conversation() {
+  const router= useRouter();
   const [messages, setMessages]:any  = useState([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,6 +62,8 @@ import { Loader } from "@/components/Loader"
 
    }catch(error) {
     console.log(error);
+   } finally{
+    router.refresh();
    }
   }
 

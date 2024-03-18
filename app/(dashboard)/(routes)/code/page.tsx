@@ -18,11 +18,13 @@ import { UserAvatar } from '@/components/user-avatar'
 import { BotAvatar } from '@/components/bot-avatar'
 
 import ReactMarkdown from 'react-markdown'
+import { useRouter } from 'next/navigation'
 // import { useRouter } from 'next/router'
 
 
 
 function CodePage() {
+  const router = useRouter();
   const [messages, setMessages]:any  = useState([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,6 +60,8 @@ function CodePage() {
 
    }catch(error) {
     console.log(error);
+   }finally{
+    router.refresh();
    }
   }
   return (

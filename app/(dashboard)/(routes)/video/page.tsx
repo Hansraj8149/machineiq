@@ -20,10 +20,10 @@ import { formSchema } from "../code/constants"
 import { Heading } from "@/components/Heading"
 import { Loader } from "@/components/Loader"
 import { VideoIcon } from "lucide-react"
-// import Router from "next/router"
+import { useRouter } from "next/navigation"
 
  function Video() {
-  // const router = Router();
+  const router = useRouter();
   const [video, setVideo] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,6 +45,8 @@ setVideo(undefined);
 
    }catch(error) {
     console.log(error);
+   }finally{
+    router.refresh();
    }
   }
 

@@ -23,9 +23,11 @@ import { amountOptions, formSchema, resolutionOptions } from "./constants"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardFooter } from "@/components/ui/card"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 
  function Images() {
+  const router = useRouter();
 const [images, setImages] = useState<string[]>([])
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,6 +52,8 @@ const [images, setImages] = useState<string[]>([])
 
    }catch(error) {
     console.log(error);
+   }finally{
+    router.refresh();
    }
   }
 

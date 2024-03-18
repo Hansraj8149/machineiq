@@ -1,3 +1,5 @@
+import { checkApiLimit, increaseApiLimit } from '@/lib/api_limit';
+import { auth } from '@clerk/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import Replicate from 'replicate';
 
@@ -10,11 +12,16 @@ const replicate = new Replicate({
 
 export async function POST(req:NextRequest) {
   try {
+    const {userId} = auth();
   const body = await req.json();
 
   const {prompt} = body;
 
   if(!prompt) { return new NextResponse("Prompt is required", {status:400})};
+  if(!userId) return new NextResponse("User not found!",{status: 401});
+ 
+  const freeTrail = await checkApiLimit();
+if(!freeTrail) return new NextResponse("Free trail has expired",{status: 403});
 
 
 
@@ -29,8 +36,7 @@ export async function POST(req:NextRequest) {
       }
     }
   );
-  console.log(output);
-  console.log(output);
+  await increaseApiLimit();
   return new NextResponse(output, {status:200})
   }catch(error) {
     console.log("[VIDEO_ERROR]",error);

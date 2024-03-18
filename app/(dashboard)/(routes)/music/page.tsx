@@ -20,10 +20,10 @@ import { formSchema } from "../code/constants"
 import { Heading } from "@/components/Heading"
 import { Loader } from "@/components/Loader"
 import { MusicIcon } from "lucide-react"
-// import Router from "next/router"
+import {useRouter} from "next/navigation"
 
  function Music() {
-  // const router = Router();
+  const router = useRouter();
   const [music, setMusic] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,6 +45,8 @@ setMusic(undefined);
 
    }catch(error) {
     console.log(error);
+   }finally{
+    router.refresh();
    }
   }
 

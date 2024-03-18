@@ -1,6 +1,7 @@
 import {GoogleGenerativeAI} from '@google/generative-ai'
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs';
+import { checkApiLimit, increaseApiLimit } from '@/lib/api_limit';
 
 const API_KEY:any= process.env.API_KEY;
 
@@ -25,10 +26,14 @@ export async function POST(req:NextRequest) {
         
         if(!userId) return new NextResponse("User not found!",{status: 401});
         if(!prompt) return new NextResponse("please enter the message", {status:400})
-
-       const result:any= await model.generateContent(prompt)
-      const response  = await result.response;
-      const text= response.text();
+        const freeTrail = await checkApiLimit();
+    if(!freeTrail) return new NextResponse("Free trail has expired",{status: 403});
+    
+    const result:any= await model.generateContent(prompt)
+    await increaseApiLimit();
+    const response  = await result.response;
+    const text= response.text();
+    await increaseApiLimit();
 
 
 
