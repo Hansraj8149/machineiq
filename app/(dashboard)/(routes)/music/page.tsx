@@ -21,8 +21,10 @@ import { Heading } from "@/components/Heading"
 import { Loader } from "@/components/Loader"
 import { MusicIcon } from "lucide-react"
 import {useRouter} from "next/navigation"
+import { useProModal } from "@/hooks/useProModal"
 
  function Music() {
+  const proModal = useProModal();
   const router = useRouter();
   const [music, setMusic] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -43,8 +45,10 @@ setMusic(undefined);
   
     form.reset();
 
-   }catch(error) {
+   }catch(error:any) {
     console.log(error);
+    if(error?.response?.status===403) proModal.onOpen();
+
    }finally{
     router.refresh();
    }
@@ -56,8 +60,8 @@ setMusic(undefined);
         title="Music"
         description="Our most advanced Music model."
         icon={MusicIcon}
-        iconColor="text-violet-500"
-        bgColor="bg-violet-500/10"
+        iconColor="text-emerald-700"
+        bgColor="bg-emerald-700/10"
       />
       <div className="px-4 lg:px-8">
         <div>

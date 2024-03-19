@@ -1,4 +1,4 @@
-import { checkApiLimit, increaseApiLimit } from '@/lib/api_limit';
+import { checkApiLimit } from '@/lib/api_limit';
 import { auth } from '@clerk/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import Replicate from 'replicate';
@@ -44,7 +44,6 @@ if(!freeTrail) return new NextResponse("Free trail has expired",{status: 403});
       }
     }
   );
-  await increaseApiLimit();
 
   return new NextResponse(output, {status:200})
   }catch(error) {

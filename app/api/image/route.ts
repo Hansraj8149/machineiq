@@ -1,4 +1,4 @@
-import { checkApiLimit, increaseApiLimit } from '@/lib/api_limit';
+import { checkApiLimit } from '@/lib/api_limit';
 import { auth } from '@clerk/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import Replicate from 'replicate';
@@ -45,7 +45,6 @@ export async function POST(req:NextRequest) {
       }
     }
   );
-  await increaseApiLimit();
   return new NextResponse(output, {status:200})
   }catch(error) {
     console.log("[IMAGE_ERROR]",error);

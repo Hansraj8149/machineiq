@@ -13,16 +13,15 @@ import {
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import axios from "axios"
-import { UserAvatar } from "@/components/user-avatar"
-import { BotAvatar } from "@/components/bot-avatar"
-import { cn } from "@/lib/utils"
 import { formSchema } from "../code/constants"
 import { Heading } from "@/components/Heading"
 import { Loader } from "@/components/Loader"
 import { VideoIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useProModal } from "@/hooks/useProModal"
 
  function Video() {
+  const proModal = useProModal();
   const router = useRouter();
   const [video, setVideo] = useState<string>();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -43,8 +42,10 @@ setVideo(undefined);
   
     form.reset();
 
-   }catch(error) {
+   }catch(error:any) {
     console.log(error);
+    if(error?.response?.status===403) proModal.onOpen();
+
    }finally{
     router.refresh();
    }
@@ -56,8 +57,8 @@ setVideo(undefined);
         title="Video"
         description="Our most advanced Video model."
         icon={VideoIcon}
-        iconColor="text-violet-500"
-        bgColor="bg-violet-500/10"
+        iconColor="text-orange-700"
+        bgColor="bg-orange-700/10"
       />
       <div className="px-4 lg:px-8">
         <div>

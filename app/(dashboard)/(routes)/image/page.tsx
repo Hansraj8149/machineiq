@@ -24,9 +24,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardFooter } from "@/components/ui/card"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { useProModal } from "@/hooks/useProModal"
 
 
  function Images() {
+  const proModal = useProModal();
   const router = useRouter();
 const [images, setImages] = useState<string[]>([])
   const form = useForm<z.infer<typeof formSchema>>({
@@ -50,8 +52,9 @@ const [images, setImages] = useState<string[]>([])
     setImages(urls.split(','));
     form.reset();
 
-   }catch(error) {
+   }catch(error:any) {
     console.log(error);
+    if(error?.response?.status===403) proModal.onOpen();
    }finally{
     router.refresh();
    }
@@ -63,8 +66,8 @@ const [images, setImages] = useState<string[]>([])
         title="Images"
         description="Our most advanced Image generation model."
         icon={ImageIcon}
-        iconColor="text-violet-500"
-        bgColor="bg-violet-500/10"
+        iconColor="text-pink-700"
+        bgColor="bg-pink-700/10"
       />
       <div className="px-4 lg:px-8">
         <div>
@@ -147,7 +150,7 @@ const [images, setImages] = useState<string[]>([])
 
                 </FormItem>
               )}/>
-              <Button className="col-span-12 lg:col-span-2 w-full" type="submit" disabled={isLoading} size="icon">
+              <Button className=" col-span-12 lg:col-span-2 w-full" type="submit" disabled={isLoading} size="icon">
                 Generate
               </Button>
             </form>

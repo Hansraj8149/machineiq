@@ -10,18 +10,20 @@ import FreeCounter from "./FreeCounter";
 
 
 const routes = [
+
   {
     label: 'Dashboard',
     icon: LayoutDashboard,
     href: '/dashboard',
-    color: "text-sky-500"
+    color: "text-yellow-500"
   },
   {
-    label: 'Conversation',
-    icon: MessageSquare,
-    href: '/conversation',
-    color: "text-violet-500",
+    label: 'Code Generation',
+    icon: Code,
+    color: "text-sky-700",
+    href: '/code',
   },
+ 
   {
     label: 'Image Generation',
     icon: ImageIcon,
@@ -41,10 +43,10 @@ const routes = [
     href: '/music',
   },
   {
-    label: 'Code Generation',
-    icon: Code,
-    color: "text-green-700",
-    href: '/code',
+    label: 'Conversation',
+    icon: MessageSquare,
+    href: '/conversation',
+    color: "text-violet-500",
   },
   {
     label: 'Settings',
@@ -53,14 +55,10 @@ const routes = [
   },
 ];
 
-interface SidebarPropsI {
-  apiLimitCount:number,
-}
-export const Sidebar = ({apiLimitCount=0}: SidebarPropsI) => {
+export const Sidebar = () => {
   const pathname = usePathname();
-// console.log(apiLimitCount)
   return (
-    <div className="space-y-4 py-4 flex flex-col h-full bg-[black] text-[white]">
+    <div className="space-y-4 py-4 flex flex-col h-full bg-[black] text-white">
       <div className="px-3 py-2 flex-1">
         <Link href="/dashboard" className="flex items-center pl-3 mb-10">
           <div className="relative h-7 w-36 mt-4 ">
@@ -86,7 +84,7 @@ export const Sidebar = ({apiLimitCount=0}: SidebarPropsI) => {
           ))}
         </div>
       </div>
-    <FreeCounter apiLimitCount = {apiLimitCount}/>
+    <FreeCounter/>
     </div>
   );
 };
