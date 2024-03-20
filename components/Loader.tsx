@@ -3,10 +3,10 @@ import Image from "next/image"
 export const Loader = () => {
   return (
     <div className="h-full flex flex-col gap-y-4 items-center justify-center">
-                <div className="relative h-5 w-20 mt-4 animate-pulse">
+                <div className="relative h-8 w-8 mt-4 animate-spin">
         <Image
           alt="Logo"
-          src="/logon.png"
+          src="/logo.png"
           fill
         />
       </div>
