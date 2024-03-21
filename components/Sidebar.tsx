@@ -19,6 +19,12 @@ const routes = [
     color: "text-yellow-500"
   },
   {
+    label: 'Conversation',
+    icon: MessageSquare,
+    href: '/conversation',
+    color: "text-violet-500",
+  },
+  {
     label: 'Code Generation',
     icon: Code,
     color: "text-sky-700",
@@ -42,12 +48,6 @@ const routes = [
     icon: Music,
     color: "text-emerald-500",
     href: '/music',
-  },
-  {
-    label: 'Conversation',
-    icon: MessageSquare,
-    href: '/conversation',
-    color: "text-violet-500",
   },
   {
     label: 'Settings',

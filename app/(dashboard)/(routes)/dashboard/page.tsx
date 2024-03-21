@@ -8,6 +8,13 @@ import { useRouter } from "next/navigation"
 const tools = [
  
   {
+    label: "Conversation",
+    icon: MessageCircle,
+    color: "text-violet-700",
+    bgColor: "bg-violet-700/10",
+     href: '/conversation'
+  },
+  {
     label: 'Code Generation',
     icon: Code,
     color: "text-sky-700",
@@ -42,13 +49,6 @@ const tools = [
   },
   
   
-  {
-    label: "Conversation",
-    icon: MessageCircle,
-    color: "text-violet-700",
-    bgColor: "bg-violet-700/10",
-     href: '/conversation'
-  },
 ]
 const DashboardPage = () => {
   const router = useRouter();
