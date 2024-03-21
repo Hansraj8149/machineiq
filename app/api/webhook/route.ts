@@ -37,7 +37,7 @@ console.log(subscription);
         userId: session?.metadata?.userId,
         stripeSubscriptionId: subscription.id,
         stripeCustomerId: subscription.customer as string,
-        stripePricedId: subscription.items.data[0].price.id,
+        stripePriceId: subscription.items.data[0].price.id,
         stripeCurrentPeriodEnd: new Date(
           subscription.current_period_end * 1000
         ),
@@ -55,7 +55,7 @@ console.log(subscription);
         stripeSubscriptionId: subscription.id,
       },
       data: {
-        stripePricedId: subscription.items.data[0].price.id,
+        stripePriceId: subscription.items.data[0].price.id,
         stripeCurrentPeriodEnd: new Date(
           subscription.current_period_end * 1000
         ),

@@ -28,6 +28,7 @@ export async function POST(req:NextRequest) {
   const amountN= Number(amount);
 
   const freeTrail = await checkApiLimit();
+  console.log(freeTrail)
   if(!freeTrail) return new NextResponse("Free trail has expired",{status: 403});
   const output:any = await replicate.run(
     "lucataco/sdxl-lightning-4step:727e49a643e999d602a896c774a0658ffefea21465756a6ce24b7ea4165eba6a",

@@ -19,6 +19,7 @@ import { BotAvatar } from '@/components/bot-avatar'
 
 import ReactMarkdown from 'react-markdown'
 import { useRouter } from 'next/navigation'
+
 // import { useRouter } from 'next/router'
 
 
@@ -50,6 +51,7 @@ function CodePage() {
       role:'bot',
       content:response.data
     }
+  
   
     // newMessage.result = response.data;
     // console.log(newMessage)

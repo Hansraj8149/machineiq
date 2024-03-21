@@ -25,9 +25,7 @@ export async function POST(req:NextRequest) {
        const result:any= await model.generateContent(prompt)
       const response  = await result.response;
       const text= response.text();
-
-
-
+      
         // console.log(response)
         return NextResponse.json(text, {status: 200})
     }
