@@ -32,7 +32,7 @@ export async function POST(req:NextRequest) {
 
 
 
-        // console.log(response[0].candidates)
+        // console.log(result.response)
         return NextResponse.json(text, {status: 200})
     }
     catch(error:any) {

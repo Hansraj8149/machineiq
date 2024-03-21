@@ -30,14 +30,25 @@ export async function GET() {
 
       return new NextResponse(JSON.stringify({ url: stripeSession.url }))
     }
-
+    const stripeCustomer = await stripe.customers.create({
+      name: "testuser",
+      address:{
+        city:"testcity",
+        country:"testCountry",
+        line1:"testline1"
+      },
+      email: user.emailAddresses[0].emailAddress,
+      
+    
+    })
+    // console.log(user);
     const stripeSession = await stripe.checkout.sessions.create({
       success_url: settingsUrl,
       cancel_url: settingsUrl,
+      customer:stripeCustomer.id,
       payment_method_types: ["card"],
       mode: "subscription",
       billing_address_collection: "auto",
-      customer_email: user.emailAddresses[0].emailAddress,
       line_items: [
         {
           price_data: {
@@ -46,22 +57,18 @@ export async function GET() {
               name: "MachineIQ Pro",
               description: "Unlimited AI Generations"
             },
-            
-            unit_amount: 2000,
+            unit_amount: 200000,
             recurring: {
               interval: "month"
             }
           },
           quantity: 1,
         },
-        
       ],
-    
       metadata: {
         userId,
       },
     })
-
     return new NextResponse(JSON.stringify({ url: stripeSession.url }))
   } catch (error) {
     console.log("[STRIPE_ERROR]", error);
