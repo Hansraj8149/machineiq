@@ -9,24 +9,26 @@ import {
   FormControl,
   FormField,
   FormItem,
+
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import axios from "axios"
-import { UserAvatar } from "@/components/user-avatar"
-import { BotAvatar } from "@/components/bot-avatar"
-import { cn } from "@/lib/utils"
-import { formSchema } from "../code/constants"
+
+import { Download, Palette } from "lucide-react"
 import { Heading } from "@/components/Heading"
 import { Loader } from "@/components/Loader"
-import { MusicIcon } from "lucide-react"
-import {useRouter} from "next/navigation"
+import {  formSchema} from "./constants"
+import { Card, CardFooter } from "@/components/ui/card"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { useProModal } from "@/hooks/useProModal"
 
- function Music() {
+
+ function Images() {
   const proModal = useProModal();
   const router = useRouter();
-  const [music, setMusic] = useState<string>();
+const [images, setImages] = useState('')
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,20 +36,19 @@ import { useProModal } from "@/hooks/useProModal"
     },
   })
 
+
   const isLoading = form.formState.isSubmitting;
  async function onSubmit(values: z.infer<typeof formSchema>) {
   try {
-setMusic(undefined);
-   const response = await axios.post('api/music',values);
-   console.log(response);
-   setMusic(response.data);
-  
-    form.reset();
-
+    // console.log(values)
+   setImages('');
+    const response:any = await axios.post("/api/anime", values);
+  console.log(response.data)
+     setImages(response.data);
+     console.log(images);
    }catch(error:any) {
     console.log(error);
     if(error?.response?.status===403) proModal.onOpen();
-
    }finally{
     router.refresh();
    }
@@ -56,11 +57,11 @@ setMusic(undefined);
   return ( 
     <div>
       <Heading
-        title="Music"
-        description="Our most advanced Music model."
-        icon={MusicIcon}
-        iconColor="text-emerald-700"
-        bgColor="bg-emerald-700/10"
+        title="Anime Characters"
+        description="Our most advanced Anime Character Generation model."
+        icon={Palette}
+        iconColor="text-sky-700"
+        bgColor="bg-sky-700/10"
       />
       <div className="px-4 lg:px-8">
         <div>
@@ -88,7 +89,7 @@ setMusic(undefined);
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading} 
-                        placeholder="Edo25 major g melodies that sound triumphant and cinematic. Leading up to a crescendo that resolves in a 9th harmonic"
+                        placeholder="A beautiful anime girl in a Japanese kimono stands among cherry blossoms wearing long flowing hair." 
                         {...field}
                       />
                     </FormControl>
@@ -108,17 +109,32 @@ setMusic(undefined);
             </div>
           )}
           {/* {messages.length === 0 && !isLoading && (
-            <Empty label="No Music started." />
+            <Empty label="No conversation started." />
           )} */}
-          {music && (
-          <audio controls className="w-full mt-8">
-            <source src={music} />
-          </audio>
-        )}
+          
+      {images &&     <div className="grid grid-cols-1 mt-8">
+           <Card key={images} className="rounded-lg overflow-hidden">
+               <div className="relative aspect-square">
+                 <Image
+                   fill
+                   alt="Generated"
+                   src={images}
+                 /> 
+               </div>
+               <CardFooter className="p-2">
+                 <Button onClick={() => window.open(images)} variant="secondary" className="w-full">
+                   <Download className="h-4 w-4 mr-2" />
+                   Download
+                 </Button>
+               </CardFooter>
+             </Card>
+        
+         </div>
+         }
         </div>
       </div>
     </div>
    );
 
 }
-export default Music;
+export default Images;

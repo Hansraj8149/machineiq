@@ -7,54 +7,11 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import FreeCounter from "./FreeCounter";
 import { Poppins } from "next/font/google";
+import { tools } from "@/constants";
 const poppins = Poppins({weight:"600",subsets:['latin']})
 
 
-const routes = [
 
-  {
-    label: 'Dashboard',
-    icon: LayoutDashboard,
-    href: '/dashboard',
-    color: "text-yellow-500"
-  },
-  {
-    label: 'Conversation',
-    icon: MessageSquare,
-    href: '/conversation',
-    color: "text-violet-500",
-  },
-  {
-    label: 'Code Generation',
-    icon: Code,
-    color: "text-sky-700",
-    href: '/code',
-  },
- 
-  {
-    label: 'Image Generation',
-    icon: ImageIcon,
-    color: "text-pink-700",
-    href: '/image',
-  },
-  {
-    label: 'Video Generation',
-    icon: VideoIcon,
-    color: "text-orange-700",
-    href: '/video',
-  },
-  {
-    label: 'Music Generation',
-    icon: Music,
-    color: "text-emerald-500",
-    href: '/music',
-  },
-  {
-    label: 'Settings',
-    icon: Settings,
-    href: '/settings',
-  },
-];
 
 export const Sidebar = () => {
   const pathname = usePathname();
@@ -70,7 +27,7 @@ export const Sidebar = () => {
           </h1>
         </Link>
         <div className="space-y-1">
-          {routes.map((route) => (
+          {tools.map((route) => (
             <Link
               key={route.href} 
               href={route.href}

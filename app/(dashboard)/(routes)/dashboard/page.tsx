@@ -2,54 +2,10 @@
 
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { ArrowRight, Code, ImageIcon, MessageCircle, Music, VideoIcon } from "lucide-react"
-
+import { ArrowRight,Palette, Code, ImageIcon, MessageCircle, Music, VideoIcon } from "lucide-react"
+import { tools } from "@/constants"
 import { useRouter } from "next/navigation"
-const tools = [
- 
-  {
-    label: "Conversation",
-    icon: MessageCircle,
-    color: "text-violet-700",
-    bgColor: "bg-violet-700/10",
-     href: '/conversation'
-  },
-  {
-    label: 'Code Generation',
-    icon: Code,
-    color: "text-sky-700",
-    href: '/code',
-    bgColor: "bg-sky-700/10",
 
-  },
- 
-  {
-    label: 'Image Generation',
-    icon: ImageIcon,
-    color: "text-pink-700",
-    href: '/image',
-    bgColor: "bg-pink-700/10",
-
-  },
-  {
-    label: 'Music Generation',
-    icon: Music,
-    color: "text-emerald-700",
-    href: '/music',
-    bgColor: "bg-emerald-700/10",
-
-  },
-  {
-    label: 'Video Generation',
-    icon: VideoIcon,
-    color: "text-orange-700",
-    href: '/video',
-    bgColor: "bg-orange-700/10",
-
-  },
-  
-  
-]
 const DashboardPage = () => {
   const router = useRouter();
   return (

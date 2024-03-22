@@ -39,8 +39,7 @@ const [images, setImages] = useState<string[]>([])
       resolution:"512x512"
     },
   })
- 
-  // 2. Define a submit handler.
+
   const isLoading = form.formState.isSubmitting;
  async function onSubmit(values: z.infer<typeof formSchema>) {
   try {
@@ -66,8 +65,8 @@ const [images, setImages] = useState<string[]>([])
         title="Images"
         description="Our most advanced Image generation model."
         icon={ImageIcon}
-        iconColor="text-pink-700"
-        bgColor="bg-pink-700/10"
+        iconColor="text-rose-700"
+        bgColor="bg-rose-700/10"
       />
       <div className="px-4 lg:px-8">
         <div>

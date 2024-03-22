@@ -72,8 +72,8 @@ function CodePage() {
       title="Code Generation"
       description="Gneerate code using descriptive text."
       icon={Code}
-      iconColor="text-sky-700"
-      bgColor="bg-sky-700/10"
+      iconColor="text-pink-700"
+      bgColor="bg-pink-700/10"
     />
     <div className="px-4 lg:px-8">
       <div>

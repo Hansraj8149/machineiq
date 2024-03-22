@@ -30,8 +30,7 @@ import { useProModal } from "@/hooks/useProModal"
       prompt: "",
     },
   })
- 
-  // 2. Define a submit handler.
+
   const isLoading = form.formState.isSubmitting;
  async function onSubmit(values: z.infer<typeof formSchema>) {
   try {
@@ -57,8 +56,8 @@ setVideo(undefined);
         title="Video"
         description="Our most advanced Video model."
         icon={VideoIcon}
-        iconColor="text-orange-700"
-        bgColor="bg-orange-700/10"
+        iconColor="text-amber-700"
+        bgColor="bg-amber-700/10"
       />
       <div className="px-4 lg:px-8">
         <div>

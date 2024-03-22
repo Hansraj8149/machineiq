@@ -35,7 +35,7 @@ import { useRouter } from "next/navigation"
     },
   })
  
-  // 2. Define a submit handler.
+
   const isLoading = form.formState.isSubmitting;
  async function onSubmit(values: z.infer<typeof formSchema>) {
   try {
@@ -73,8 +73,8 @@ import { useRouter } from "next/navigation"
         title="Conversation"
         description="Our most advanced conversation model."
         icon={MessageSquare}
-        iconColor="text-violet-500"
-        bgColor="bg-violet-500/10"
+        iconColor="text-teal-700"
+        bgColor="bg-teal-700/10"
       />
       <div className="px-4 lg:px-8">
         <div>
