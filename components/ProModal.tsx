@@ -20,15 +20,7 @@ import { cn } from "@/lib/utils";
 import { useProModal } from "@/hooks/useProModal";
 
 const tools = [
-  
- 
-  {
-    label: 'Image Generation',
-    icon: ImageIcon,
-    color: "text-pink-700",
-    bgColor: "bg-pink-700/10",
 
-  },
   {
     label: 'Video Generation',
     icon: VideoIcon,

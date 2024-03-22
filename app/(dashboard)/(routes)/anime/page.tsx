@@ -22,13 +22,41 @@ import {  formSchema} from "./constants"
 import { Card, CardFooter } from "@/components/ui/card"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useProModal } from "@/hooks/useProModal"
 
+function downloadImage(base64Data:string, fileName:string) {
+  const byteCharacters = atob(base64Data); // Decode base64 data
+  const byteArrays = [];
 
- function Images() {
-  const proModal = useProModal();
+  for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+    const slice = byteCharacters.slice(offset, offset + 512);
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+
+  const blob = new Blob(byteArrays, { type: 'image/png' }); // Create Blob from byte arrays
+  const url = window.URL.createObjectURL(blob); // Create URL object from Blob
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  window.URL.revokeObjectURL(url); // Release the object URL
+}
+
+ function Anime() {
   const router = useRouter();
-const [images, setImages] = useState('')
+const [url, setUrl] = useState<string>('')
+const handleDownload = ()=> {
+  if(url) {
+
+    const base64Data = url.split(",")[1];
+    const fileName = "generated_image.png";
+    downloadImage(base64Data,fileName)
+  }
+}
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,15 +68,14 @@ const [images, setImages] = useState('')
   const isLoading = form.formState.isSubmitting;
  async function onSubmit(values: z.infer<typeof formSchema>) {
   try {
-    // console.log(values)
-   setImages('');
+    // stripePriceId(values)
+   setUrl('');
     const response:any = await axios.post("/api/anime", values);
   console.log(response.data)
-     setImages(response.data);
-     console.log(images);
+     setUrl(response.data);
+     console.log(url);
    }catch(error:any) {
     console.log(error);
-    if(error?.response?.status===403) proModal.onOpen();
    }finally{
     router.refresh();
    }
@@ -108,21 +135,19 @@ const [images, setImages] = useState('')
               <Loader />
             </div>
           )}
-          {/* {messages.length === 0 && !isLoading && (
-            <Empty label="No conversation started." />
-          )} */}
+        
           
-      {images &&     <div className="grid grid-cols-1 mt-8">
-           <Card key={images} className="rounded-lg overflow-hidden">
+      {url &&     <div className="grid grid-cols-1 mt-8">
+           <Card key={url} className="rounded-lg overflow-hidden">
                <div className="relative aspect-square">
                  <Image
                    fill
                    alt="Generated"
-                   src={images}
+                   src={url}
                  /> 
                </div>
                <CardFooter className="p-2">
-                 <Button onClick={() => window.open(images)} variant="secondary" className="w-full">
+                 <Button onClick={handleDownload} variant="secondary" className="w-full">
                    <Download className="h-4 w-4 mr-2" />
                    Download
                  </Button>
@@ -137,4 +162,4 @@ const [images, setImages] = useState('')
    );
 
 }
-export default Images;
+export default Anime;

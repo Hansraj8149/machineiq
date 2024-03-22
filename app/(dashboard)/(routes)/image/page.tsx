@@ -15,45 +15,70 @@ import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import axios from "axios"
 
-import { cn } from "@/lib/utils"
-import { Download, ImageIcon } from "lucide-react"
+import { Download, ImageIcon, Palette } from "lucide-react"
 import { Heading } from "@/components/Heading"
 import { Loader } from "@/components/Loader"
-import { amountOptions, formSchema, resolutionOptions } from "./constants"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {  formSchema} from "./constants"
 import { Card, CardFooter } from "@/components/ui/card"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useProModal } from "@/hooks/useProModal"
 
 
+function downloadImage(base64Data:string, fileName:string) {
+  const byteCharacters = atob(base64Data); // Decode base64 data
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+    const slice = byteCharacters.slice(offset, offset + 512);
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+
+  const blob = new Blob(byteArrays, { type: 'image/png' }); // Create Blob from byte arrays
+  const url = window.URL.createObjectURL(blob); // Create URL object from Blob
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  window.URL.revokeObjectURL(url); // Release the object URL
+}
+
  function Images() {
-  const proModal = useProModal();
   const router = useRouter();
-const [images, setImages] = useState<string[]>([])
+const [url, setUrl] = useState<string>('');
+const handleDownload = ()=> {
+  if(url) {
+
+    const base64Data = url.split(",")[1];
+    const fileName = "generated_image.png";
+    downloadImage(base64Data,fileName)
+  }
+}
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       prompt: "",
-      amount:"1",
-      resolution:"512x512"
     },
   })
+
 
   const isLoading = form.formState.isSubmitting;
  async function onSubmit(values: z.infer<typeof formSchema>) {
   try {
-    // console.log(values)
-   setImages([]);
+   
+  setUrl('');
     const response = await axios.post("/api/image", values);
-    const urls = response.data;
-    // console.log(urls.split(','))
-    setImages(urls.split(','));
-    form.reset();
+  console.log(response.data)
 
+     setUrl(response.data);
+     console.log(url);
    }catch(error:any) {
     console.log(error);
-    if(error?.response?.status===403) proModal.onOpen();
    }finally{
     router.refresh();
    }
@@ -62,8 +87,8 @@ const [images, setImages] = useState<string[]>([])
   return ( 
     <div>
       <Heading
-        title="Images"
-        description="Our most advanced Image generation model."
+        title="Image Generation"
+        description="Our most advanced Image Generation model."
         icon={ImageIcon}
         iconColor="text-rose-700"
         bgColor="bg-rose-700/10"
@@ -89,67 +114,19 @@ const [images, setImages] = useState<string[]>([])
               <FormField
                 name="prompt"
                 render={({ field }) => (
-                  <FormItem className="col-span-12 lg:col-span-6">
+                  <FormItem className="col-span-12 lg:col-span-10">
                     <FormControl className="m-0 p-0">
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading} 
-                        placeholder="Generate a image of puppy on the roof" 
+                        placeholder="Portrait of a child playing in a park, using natural lighting and candid expressions." 
                         {...field}
                       />
                     </FormControl>
                   </FormItem>
                 )}
               />
-              <FormField name="amount" control={form.control}
-              render={({field}) => (
-                <FormItem className="col-span-12 lg:col-span-2">
-                  <Select disabled={isLoading}
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue defaultValue={field.value}/>
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {amountOptions.map((option)=> (
-                        <SelectItem key={option.value}
-                        value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
-                </FormItem>
-              )}/>
-               <FormField name="resolution" control={form.control}
-              render={({field}) => (
-                <FormItem className="col-span-12 lg:col-span-2">
-                  <Select disabled={isLoading}
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue defaultValue={field.value}/>
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {resolutionOptions.map((option)=> (
-                        <SelectItem key={option.value}
-                        value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
-                </FormItem>
-              )}/>
-              <Button className=" col-span-12 lg:col-span-2 w-full" type="submit" disabled={isLoading} size="icon">
+              <Button className="col-span-12 lg:col-span-2 w-full" type="submit" disabled={isLoading} size="icon">
                 Generate
               </Button>
             </form>
@@ -161,28 +138,27 @@ const [images, setImages] = useState<string[]>([])
               <Loader />
             </div>
           )}
-          {/* {images.length === 0 && !isLoading && (
-            <Empty label="No conversation started." />
-          )} */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-8">
-          {images.map((src) => (
-            <Card key={src} className="rounded-lg overflow-hidden">
-              <div className="relative aspect-square">
-                <Image
-                  fill
-                  alt="Generated"
-                  src={src}
-                /> 
-              </div>
-              <CardFooter className="p-2">
-                <Button onClick={() => window.open(src)} variant="secondary" className="w-full">
-                  <Download className="h-4 w-4 mr-2" />
-                  Download
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+      
+          
+      {url &&     <div className="grid grid-cols-1 mt-8">
+           <Card key={url} className="rounded-lg overflow-hidden">
+               <div className="relative aspect-square">
+                 <Image
+                   fill
+                   alt="Generated"
+                   src={url}
+                 /> 
+               </div>
+               <CardFooter className="p-2">
+                 <Button onClick={handleDownload} variant="secondary" className="w-full">
+                   <Download className="h-4 w-4 mr-2" />
+                   Download
+                 </Button>
+               </CardFooter>
+             </Card>
+        
+         </div>
+         }
         </div>
       </div>
     </div>

@@ -1,52 +1,35 @@
-import { checkApiLimit } from '@/lib/api_limit';
 import { auth } from '@clerk/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
-import Replicate from 'replicate';
+import axios from 'axios';
+ const HF_TOKEN= process.env.HUGGINGFACE_API_KEY;
 
 
-const replicate = new Replicate({
-  auth:process.env.REPLICATE_API_TOKEN
-})
-
-
-
-export async function POST(req:NextRequest) {
-  try {
-    const {userId} = auth();
+export async function POST(req:NextRequest){
+try {
+  const {userId} = auth();
   const body = await req.json();
 
-  const {prompt,amount=1,resolution="512x512"} = body;
+  const {prompt,} = body;
+
   if(!userId) return new NextResponse("User not found!",{status: 401});
-
-  if(!prompt) { return new NextResponse("Prompt is required", {status:400})};
-  if(!amount) { return new NextResponse("Amount is required", {status:400})};
-  if(!resolution) { return new NextResponse("Resolution is required", {status:400})};
-
-  const splitedResolution = resolution.split('x');
-  const width=Number(splitedResolution[0]);
-  const height=Number(splitedResolution[1]);
-  const amountN= Number(amount);
-
-  const freeTrail = await checkApiLimit();
-  console.log(freeTrail)
-  if(!freeTrail) return new NextResponse("Free trail has expired",{status: 403});
-  const output:any = await replicate.run(
-    "lucataco/sdxl-lightning-4step:727e49a643e999d602a896c774a0658ffefea21465756a6ce24b7ea4165eba6a",
+  const response = await axios.post(
+    "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0",
+    prompt,
     {
-      input: {
-        seed: 2992471961,
-        width: width,
-        height: height,
-        prompt: prompt,
-        scheduler: "K_EULER",
-        num_outputs: amountN,
-        guidance_scale: 0,
-        negative_prompt: "worst quality, low quality",
-        num_inference_steps: 4
-      }
+      headers: {
+        Authorization: `Bearer ${HF_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      responseType: "arraybuffer",
     }
   );
-  return new NextResponse(output, {status:200})
+  
+
+
+  const base64Data = Buffer.from(response.data).toString("base64");
+  const imageUrl = `data:image/png;base64,${base64Data}`;
+// console.log(imageUrl);
+  return new NextResponse(imageUrl, { status: 200 });
   }catch(error) {
     console.log("[IMAGE_ERROR]",error);
     return NextResponse.json("internal server error",{status:500})
@@ -54,3 +37,6 @@ export async function POST(req:NextRequest) {
 
   
 }
+
+
+
